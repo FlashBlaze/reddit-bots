@@ -11,28 +11,25 @@ reddit = praw.Reddit(client_id=config.client_id,
 """
 Change the subreddit and redditor to your choice.
 """
-subreddit = reddit.subreddit('test')
+subreddit = reddit.subreddit('politics')
 redditor = reddit.redditor('spez')
+keyWords = ["twitter", "government", "trump"]
 submissionList = []
 submissionList2 = []
 
 """
-streamSubmissions streams the submissions till the 2nd last latest post and stores the submission ids in the submissionList list.
-You can then access any submission by changeing the id value in submission.
+streamSubreddit streams particular subreddit and displays the submissions containing particular words from keyWords list
 """
 
 
 def streamSubreddit():
-    count = 0
     for submission in subreddit.stream.submissions():
-        count += 1
-        if (count < 100):
-            # sleep is used to
-            time.sleep(1)
-            print(submission.title)
-            submissionList.append(submission.id)
-        else:
-            break
+        time.sleep(0.2)
+        for word in keyWords:
+            if word in submission.title.lower():
+                print(submission.title)
+            else:
+                pass
 
     submission = reddit.submission(id=submissionList[-1])
     print(submission.title)
@@ -56,25 +53,24 @@ def saveSubmissions():
 
 
 """
-Yet to decide what to do with this one. 
-WIP.
+replyToSubmissions replies to new submissions by a redditor in a particular subreddit
+Currently there is an issue with the rate limit. I will look into it later on.
 """
 
 
-def streamSubmissions():
-    for submission in redditor.stream.submissions():
-        print("Submission Post: " + submission.title)
-        print(20 * '+')
-        # time.sleep(3)
-        # submissionList2.append(submission.id)
-        subID = reddit.submission(id=str(submission))
-        # subID.unsave()
-        # for comment in subID.comments.list():
-        #     print(20 * '-')
-        #     print("Comment: " + comment.body)
-        submission.reply("Beep beep! Comment from a bot!")
+def replyToSubmissions():
+    for submission in redditor.submissions.new():
+        for submit in subreddit.search(submission.title):
+            if submission.title == submit.title:
+                print(submission.title)
+                submission.reply("Beep beep! Comment from a bot!")
+            else:
+                pass
+    # submission = reddit.submission(id=submissionList2[1])
+    # print(submission.title)
+    # submission.reply("Badoop da badoop da! Reply from a bot!")
 
 
 # saveSubmissions()
 # streamSubmissions()
-streamSubreddit()
+replyToSubmissions()
