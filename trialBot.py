@@ -36,6 +36,21 @@ def streamSubreddit():
 
 
 """
+streamSpecificTitleSubreddit streams particular subreddit and displays submissions containing all the words from keyWords list
+"""
+
+
+def streamSpecificTitleSubreddit():
+    for submission in subreddit.stream.submissions():
+        time.sleep(0.2)
+        result = all(word in submission.title.lower() for word in keyWords)
+        if result:
+            print(submission.title)
+        else:
+            pass
+
+
+"""
 saveSubmissions saves the new submissions posted by a redditor. 
 """
 
@@ -73,4 +88,5 @@ def replyToSubmissions():
 
 # saveSubmissions()
 # streamSubmissions()
-replyToSubmissions()
+# replyToSubmissions()
+streamSpecificTitleSubreddit()
